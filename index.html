@@ -7,202 +7,76 @@
   <meta name="theme-color" content="#ffffff" />
   <style>
     :root{
-      --bg:#f6f6f7;
-      --card:#ffffff;
-      --ink:#111111;
-      --muted:#6b6b6f;
-      --line:#e7e7ea;
+      --bg:#f6f6f7; --card:#fff; --ink:#111; --muted:#6b6b6f; --line:#e7e7ea;
       --shadow: 0 10px 24px rgba(0,0,0,.08);
-      --radius: 16px;
-      --tap: 44px;
+      --radius: 16px; --tap: 46px;
     }
     *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-    }
-    .safe{
-      padding: env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
-    }
+    body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+    .safe{ padding: env(safe-area-inset-top) 14px env(safe-area-inset-bottom); }
     header{
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(246,246,247,.9);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
+      position: sticky; top:0; z-index:10;
+      background: rgba(246,246,247,.92); backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
     }
-    .bar{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      padding: 10px 14px;
+    .bar{ display:flex; gap:10px; align-items:center; justify-content:space-between; padding:10px 14px; }
+    .title{ display:flex; flex-direction:column; gap:2px; min-width:160px; }
+    h1{ margin:0; font-size:16px; letter-spacing:.2px; }
+    .meta{ margin:0; font-size:12px; color:var(--muted); }
+    .row2{ display:flex; gap:10px; padding: 0 14px 12px; }
+    .search{
+      flex:1 1 auto; border:1px solid var(--line); border-radius:14px; background:var(--card);
+      padding:10px 12px; min-height: var(--tap); display:flex; align-items:center; gap:10px;
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
     }
-    .title{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width: 140px;
-    }
-    h1{
-      margin:0;
-      font-size:16px;
-      letter-spacing:.2px;
-    }
-    .meta{
-      margin:0;
-      font-size:12px;
-      color: var(--muted);
-    }
+    .search input{ width:100%; border:none; outline:none; font-size:15px; background:transparent; }
     .btn{
-      border: 1px solid var(--line);
-      background: var(--card);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size:13px;
-      min-height: var(--tap);
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      user-select:none;
+      border:1px solid var(--line); background:var(--card);
+      border-radius:12px; padding:10px 12px; font-size:13px; min-height: var(--tap);
+      display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none;
     }
     .btn:active{ transform: scale(.99); }
     .btn.danger{ border-color:#f1caca; }
-    .row2{
-      display:flex;
-      gap:10px;
-      padding: 0 14px 12px;
-    }
-    .search{
-      flex:1 1 auto;
-      border:1px solid var(--line);
-      border-radius: 14px;
-      background: var(--card);
-      padding: 10px 12px;
-      min-height: var(--tap);
-      display:flex;
-      align-items:center;
-      gap:10px;
-      box-shadow: 0 1px 0 rgba(0,0,0,.02);
-    }
-    .search input{
-      width:100%;
-      border:none;
-      outline:none;
-      font-size:15px;
-      background:transparent;
-    }
-    main{
-      padding: 12px 14px 18px;
-      max-width: 760px;
-      margin: 0 auto;
-    }
+    main{ padding:12px 14px 18px; max-width: 820px; margin:0 auto; }
+    .sectionTitle{ margin: 14px 2px 10px; font-size:12px; letter-spacing:.8px; text-transform:uppercase; color:var(--muted); }
     .card{
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      margin-bottom: 12px;
+      background:var(--card); border:1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow:hidden; margin-bottom: 12px;
     }
     .cardHeader{
-      padding: 12px 14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      border-bottom: 1px solid var(--line);
+      padding: 12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid var(--line);
     }
-    .cat{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-    .catTitle{
-      margin:0;
-      font-size:13px;
-      letter-spacing:.8px;
-      text-transform:uppercase;
-    }
-    .catCount{
-      margin:0;
-      font-size:12px;
-      color: var(--muted);
-    }
-    .items{
-      list-style:none;
-      margin:0;
-      padding: 6px 6px 8px;
-    }
+    .catTitle{ margin:0; font-size:13px; letter-spacing:.8px; text-transform:uppercase; }
+    .catSub{ margin:2px 0 0; font-size:12px; color:var(--muted); }
+    .items{ list-style:none; margin:0; padding: 6px 6px 8px; }
     .item{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 10px;
+      display:flex; align-items:center; gap:10px;
+      padding: 10px 10px; min-height: var(--tap);
       border-radius: 14px;
-      min-height: var(--tap);
     }
     .item + .item{ border-top: 1px solid rgba(231,231,234,.55); border-top-left-radius:0; border-top-right-radius:0; }
-    .item:first-child{ border-top:none; }
-    input[type="checkbox"]{
-      width:22px; height:22px;
-      flex: 0 0 auto;
-      accent-color:#111;
+    .pill{
+      font-size:12px; color:var(--muted);
+      border:1px solid var(--line); border-radius:999px; padding:6px 10px;
+      min-height: 34px; display:inline-flex; align-items:center;
     }
-    label{
-      font-size:16px;
-      line-height:1.2;
-      flex: 1 1 auto;
-      cursor:pointer;
-      padding: 2px 0;
-    }
-    .checked label{
-      text-decoration: line-through;
-      color: var(--muted);
-    }
-    .custom{
-      display:block;
-      width:100%;
-      border:none;
-      outline:none;
-      background: transparent;
-      font-size:16px;
-      line-height:1.2;
-      padding: 2px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .smallBtn{
-      font-size:12px;
-      padding: 8px 10px;
-      border-radius: 12px;
-      min-height: 38px;
-    }
-    .footerNote{
-      text-align:center;
-      font-size:12px;
-      color: var(--muted);
-      padding: 12px 0 2px;
-    }
+    .name{ font-size:16px; line-height:1.2; flex:1 1 auto; }
+    .muted{ color:var(--muted); }
+    .tapHint{ font-size:12px; color:var(--muted); padding: 8px 14px 12px; }
+    .smallBtn{ font-size:12px; padding:8px 10px; border-radius:12px; min-height: 38px; }
     .toast{
-      position: fixed;
-      left: 50%;
-      bottom: calc(env(safe-area-inset-bottom) + 16px);
+      position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 16px);
       transform: translateX(-50%);
-      background: rgba(17,17,17,.92);
-      color:#fff;
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .2s ease;
+      background: rgba(17,17,17,.92); color:#fff; padding: 10px 12px; border-radius: 999px;
+      font-size: 13px; opacity:0; pointer-events:none; transition: opacity .2s ease;
     }
     .toast.show{ opacity:1; }
+    details > summary{
+      list-style:none; cursor:pointer;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    details > summary::-webkit-details-marker{ display:none; }
   </style>
 </head>
 
@@ -211,55 +85,38 @@
   <div class="bar">
     <div class="title">
       <h1>Liste de courses</h1>
-      <p class="meta" id="meta">Sauvegarde locale activée</p>
+      <p class="meta" id="meta">Chargement…</p>
     </div>
-    <button class="btn" id="btnUncheck" title="Tout décocher">Tout décocher</button>
+    <button class="btn danger" id="btnReset">Reset</button>
   </div>
 
   <div class="row2">
-    <div class="search" title="Rechercher un item">
-      🔎 <input id="q" type="search" placeholder="Rechercher (ex: tomates, lait…)" autocomplete="off" />
+    <div class="search" title="Rechercher">
+      🔎 <input id="q" type="search" placeholder="Rechercher (ex: tomates, dentifrice…)" autocomplete="off" />
     </div>
-    <button class="btn danger" id="btnReset" title="Effacer toutes les coches et textes">Reset</button>
+    <button class="btn" id="btnClearBought">Vider “Acheté”</button>
   </div>
 </header>
 
-<main id="app" class="safe"></main>
+<main id="app" class="safe">
+  <div class="sectionTitle">À acheter</div>
+  <div id="selected"></div>
+
+  <div class="sectionTitle">Acheté (trié par rayons)</div>
+  <div id="bought"></div>
+
+  <div class="sectionTitle">Catalogue</div>
+  <div id="catalog"></div>
+</main>
 
 <div class="toast" id="toast">Sauvegardé</div>
 
 <script>
-  // =========================
-  // Données (Ziplist-like)
-  // =========================
-  const DATA = [
-    { title: "Fruits", items: ["Bananes","Pommes","Raisins","Oranges","Fraises","Avocats","Pêches","Ananas","Poires",{custom:true}] },
-    { title: "Légumes", items: ["Pommes de terre","Tomates","Oignons","Carottes","Laitue","Brocolis","Poivrons","Céleri","Ail","Concombres",{custom:true}] },
-    { title: "Conserves", items: ["Olives","Soupe","Thon","Légumes","Fruits",{custom:true}] },
-    { title: "Surgelés", items: ["Poisson","Crème glacée","Pizza","Pommes de terre","Plats préparés","Légumes"] },
-    { title: "Viandes", items: ["Poulet","Bœuf","Porc","Saucisse"] },
-    { title: "Poissons", items: ["Crevettes","Crabe","Palourdes","Thon","Saumon","Tilapia",{custom:true},{custom:true}] },
-    { title: "Charcuterie", items: ["Fromage","Jambon","Dinde","Salami",{custom:true},{custom:true}] },
-    { title: "Condiments et épices", items: ["Sel","Sucre","Poivre","Cannelle","Origan","Ketchup","Mayonnaise","Moutarde",{custom:true}] },
-    { title: "Sauces & huiles", items: ["Huile d'olive","Sauce tomate","Sauce piquante","Sauce soja",{custom:true}] },
-    { title: "Snacks", items: ["Chips","Crackers","Bretzels","Popcorn","Cacahuètes","Noix","Bonbons",{custom:true}] },
-    { title: "Pain / Boulangerie", items: ["Blé entier","Blanc","Italien","Sandwich","Tortillas","Tartes","Muffins","Bagels","Biscuits",{custom:true}] },
-    { title: "Boissons", items: ["Eau","Café","Lait","Jus de fruit","Soda","Thé","Bière","Vin"] },
-    { title: "Pâtes / Riz", items: ["Spaghetti","Macaronis","Nouilles","Riz blanc"] },
-    { title: "Céréale", items: ["Avoine","Riz","Blé","Granola"] },
-    { title: "Cuisson", items: ["Farine","Poudre à lever","Beurre","Lait","Œufs"] },
-    { title: "Bébé", items: ["Purée","Couches","Lingettes humides","Lotion hydratante"] },
-    { title: "Hygiène et beauté", items: ["Shampooing","Après-shampoing","Savon","Déodorant","Dentifrice","Fil dentaire","Crème à raser","Lames de rasoir"] },
-    { title: "Soins de santé", items: ["Pansements","Eau oxygénée","Alcool","Analgésiques","Antiacides"] },
-    { title: "Papier et film", items: ["Papier hygiénique","Essuie-tout","Mouchoirs","Papier d'aluminium","Sacs poubelles"] },
-    { title: "Entretien et nettoyage", items: ["Détergent","Adoucissant","Eau de Javel","Savon de vaisselle","Désodorisant","Gants","Éponge","Sacs poubelles","Piles"] },
-    { title: "Autres", items: [{custom:true},{custom:true},{custom:true},{custom:true},{custom:true},{custom:true},{custom:true},{custom:true},{custom:true}] },
-  ];
-
-  // =========================
-  // Persistance (iPhone / Safari)
-  // =========================
-  const LS_KEY = "courses_mobile_v1";
+  // -----------------------------
+  // Persistance
+  // status: 0=neutre, 1=à acheter, 2=acheté
+  // -----------------------------
+  const LS_KEY = "courses_bring_like_v2";
   const state = loadState();
 
   function loadState(){
@@ -271,175 +128,303 @@
     toast("Sauvegardé");
   }
 
-  // Petit feedback discret
-  let toastT = null;
+  let toastT=null;
   function toast(msg){
-    const el = document.getElementById("toast");
-    el.textContent = msg;
+    const el=document.getElementById("toast");
+    el.textContent=msg;
     el.classList.add("show");
     clearTimeout(toastT);
-    toastT = setTimeout(()=>el.classList.remove("show"), 700);
+    toastT=setTimeout(()=>el.classList.remove("show"), 650);
   }
 
-  function makeId(cat, idx){
-    return (cat + "___" + idx).toLowerCase().replace(/\s+/g,"_");
+  // -----------------------------
+  // Données (JSON externe + fallback)
+  // -----------------------------
+  const FALLBACK_DATA = {
+    schema_version: 1,
+    store_aisle_order: ["droguerie","bazar","animalerie","hygiène","liquides","apéro","épicerie","crèmerie","charcuterie","fruits et légumes","poissonnerie","boucherie","surgelés"],
+    categories: []
+  };
+
+  async function loadData(){
+    try{
+      const r = await fetch("./grocery_data.json", { cache: "no-store" });
+      if(!r.ok) throw new Error("fetch failed");
+      return await r.json();
+    }catch(e){
+      return FALLBACK_DATA;
+    }
   }
 
-  // =========================
-  // Rendu + filtre recherche
-  // =========================
-  const app = document.getElementById("app");
-  const q = document.getElementById("q");
+  // -----------------------------
+  // Helpers
+  // -----------------------------
+  const app = {
+    q: document.getElementById("q"),
+    meta: document.getElementById("meta"),
+    selected: document.getElementById("selected"),
+    bought: document.getElementById("bought"),
+    catalog: document.getElementById("catalog"),
+  };
 
   function normalize(s){
-    return (s||"")
-      .toString()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g,"") // remove accents
-      .toLowerCase();
+    return (s||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+  }
+  function makeKey(catId, name){
+    return ("i__" + catId + "__" + name).toLowerCase().replace(/\s+/g,"_");
+  }
+  function getItemState(key){
+    const it = state[key] || {};
+    return { status: (it.status ?? 0), name: it.name, catId: it.catId };
+  }
+  function setItemState(key, patch){
+    state[key] = state[key] || {};
+    Object.assign(state[key], patch);
+    saveState();
   }
 
-  function render(){
-    const query = normalize(q.value);
-    app.innerHTML = "";
+  function groupByCategory(keys, catOrder){
+    const map = new Map(catOrder.map(id => [id, []]));
+    keys.forEach(k=>{
+      const it = state[k];
+      if(!it) return;
+      if(!map.has(it.catId)) map.set(it.catId, []);
+      map.get(it.catId).push(k);
+    });
+    // Keep order
+    return catOrder.map(id => [id, map.get(id) || []]).filter(([,arr])=>arr.length>0);
+  }
 
-    DATA.forEach(block => {
-      const card = document.createElement("section");
-      card.className = "card";
+  function categoryTitleById(data){
+    const m = new Map();
+    data.categories.forEach(c => m.set(c.id, c.title));
+    return m;
+  }
 
-      const head = document.createElement("div");
-      head.className = "cardHeader";
+  // -----------------------------
+  // Rendu
+  // -----------------------------
+  function renderSelected(data){
+    const titleMap = categoryTitleById(data);
 
-      const left = document.createElement("div");
-      left.className = "cat";
-      const h = document.createElement("p");
-      h.className = "catTitle";
-      h.textContent = block.title;
+    const selectedKeys = Object.keys(state).filter(k => state[k]?.status === 1);
+    if(selectedKeys.length === 0){
+      app.selected.innerHTML = `
+        <div class="card">
+          <div class="tapHint">Tape un article dans le <b>Catalogue</b> pour l’ajouter ici. Re-tape ici pour le passer en <b>Acheté</b>.</div>
+        </div>`;
+      return;
+    }
 
-      // Count checked in this category
-      let checkedCount = 0;
-      block.items.forEach((_, idx)=>{
-        const id = makeId(block.title, idx);
-        if (state[id]?.checked) checkedCount++;
-      });
+    const groups = groupByCategory(selectedKeys, data.store_aisle_order);
+    app.selected.innerHTML = groups.map(([catId, keys]) => {
+      const catTitle = titleMap.get(catId) || catId;
+      const lis = keys
+        .sort((a,b)=> (state[a].name||"").localeCompare(state[b].name||"", "fr"))
+        .map(k => {
+          const name = state[k].name;
+          return `
+            <li class="item" data-key="${k}" data-action="markBought">
+              <span class="pill">${catTitle}</span>
+              <span class="name">${escapeHtml(name)}</span>
+              <span class="muted">→ Acheté</span>
+            </li>`;
+        }).join("");
+      return `
+        <div class="card">
+          <div class="cardHeader">
+            <div>
+              <p class="catTitle">${escapeHtml(catTitle)}</p>
+              <p class="catSub">${keys.length} article(s)</p>
+            </div>
+          </div>
+          <ul class="items">${lis}</ul>
+        </div>`;
+    }).join("");
+  }
 
-      const c = document.createElement("p");
-      c.className = "catCount";
-      c.textContent = checkedCount ? `${checkedCount} coché(s)` : "—";
+  function renderBought(data){
+    const titleMap = categoryTitleById(data);
 
-      left.appendChild(h);
-      left.appendChild(c);
+    const boughtKeys = Object.keys(state).filter(k => state[k]?.status === 2);
+    if(boughtKeys.length === 0){
+      app.bought.innerHTML = `
+        <div class="card">
+          <div class="tapHint">Les articles passés en <b>Acheté</b> apparaissent ici, triés par tes rayons.</div>
+        </div>`;
+      return;
+    }
 
-      const btn = document.createElement("button");
-      btn.className = "btn smallBtn";
-      btn.textContent = "Tout effacer";
-      btn.title = "Décoche et vide les lignes perso de cette catégorie";
-      btn.addEventListener("click", ()=>{
-        block.items.forEach((it, idx)=>{
-          const id = makeId(block.title, idx);
-          state[id] = state[id] || {};
-          state[id].checked = false;
-          if (it && typeof it === "object" && it.custom) state[id].text = "";
-        });
-        saveState();
-        render();
-      });
+    const groups = groupByCategory(boughtKeys, data.store_aisle_order);
+    app.bought.innerHTML = groups.map(([catId, keys]) => {
+      const catTitle = titleMap.get(catId) || catId;
+      const lis = keys
+        .sort((a,b)=> (state[a].name||"").localeCompare(state[b].name||"", "fr"))
+        .map(k => {
+          const name = state[k].name;
+          return `
+            <li class="item" data-key="${k}" data-action="unbuy">
+              <span class="pill">${catTitle}</span>
+              <span class="name muted" style="text-decoration:line-through;">${escapeHtml(name)}</span>
+              <span class="muted">↩︎</span>
+            </li>`;
+        }).join("");
 
-      head.appendChild(left);
-      head.appendChild(btn);
+      return `
+        <div class="card">
+          <div class="cardHeader">
+            <div>
+              <p class="catTitle">${escapeHtml(catTitle)}</p>
+              <p class="catSub">${keys.length} acheté(s)</p>
+            </div>
+          </div>
+          <ul class="items">${lis}</ul>
+        </div>`;
+    }).join("");
+  }
 
-      const ul = document.createElement("ul");
-      ul.className = "items";
+  function renderCatalog(data){
+    const q = normalize(app.q.value);
+    const titleMap = categoryTitleById(data);
 
-      let anyVisible = false;
+    // Sort categories in store order (and append any unknown at end)
+    const byId = new Map(data.categories.map(c => [c.id, c]));
+    const orderedCats = [
+      ...data.store_aisle_order.filter(id => byId.has(id)).map(id => byId.get(id)),
+      ...data.categories.filter(c => !data.store_aisle_order.includes(c.id))
+    ];
 
-      block.items.forEach((it, idx) => {
-        const id = makeId(block.title, idx);
-        const saved = state[id] || {};
-        const labelText = (typeof it === "string") ? it : (saved.text || "");
+    app.catalog.innerHTML = orderedCats.map(cat => {
+      const items = cat.items || [];
+      const lines = items.map(name => {
+        const key = makeKey(cat.id, name);
+        // ensure we store metadata at least once (for grouping)
+        if(!state[key]) state[key] = { status: 0, name, catId: cat.id };
 
-        // Filtre recherche (inclut les lignes custom remplies)
-        if (query){
-          if (!normalize(labelText).includes(query)) return;
+        const st = getItemState(key).status;
+        const badge = st === 1 ? "• À acheter" : (st === 2 ? "✓ Acheté" : "");
+        const visible = !q || normalize(name).includes(q);
+
+        if(!visible) return "";
+
+        return `
+          <li class="item" data-key="${key}" data-action="toggleSelect">
+            <span class="name">${escapeHtml(name)} <span class="muted">${escapeHtml(badge)}</span></span>
+          </li>`;
+      }).join("");
+
+      if(!lines.trim()) return "";
+
+      const countSelected = Object.keys(state).filter(k => state[k]?.catId === cat.id && state[k]?.status === 1).length;
+
+      return `
+        <div class="card">
+          <div class="cardHeader">
+            <details open>
+              <summary>
+                <div>
+                  <p class="catTitle">${escapeHtml(cat.title || titleMap.get(cat.id) || cat.id)}</p>
+                  <p class="catSub">${countSelected ? countSelected + " à acheter" : "—"}</p>
+                </div>
+                <span class="muted">▼</span>
+              </summary>
+              <div class="tapHint">Tap = ajouter/enlever “À acheter”.</div>
+            </details>
+          </div>
+          <ul class="items">${lines}</ul>
+        </div>`;
+    }).join("");
+  }
+
+  function renderAll(data){
+    // Clean meta
+    app.meta.textContent = "Sauvegarde locale activée • mode Bring-like";
+    renderSelected(data);
+    renderBought(data);
+    renderCatalog(data);
+  }
+
+  // -----------------------------
+  // Actions (tap anywhere on item rows)
+  // -----------------------------
+  function handleTap(e, data){
+    const li = e.target.closest(".item");
+    if(!li) return;
+    const key = li.getAttribute("data-key");
+    const action = li.getAttribute("data-action");
+    if(!key || !action) return;
+
+    if(action === "toggleSelect"){
+      const cur = getItemState(key).status;
+      // 0->1 (à acheter), 1->0 (retire), 2->1 (ré-acheter)
+      const next = (cur === 0) ? 1 : (cur === 1 ? 0 : 1);
+      setItemState(key, { status: next });
+      renderAll(data);
+      return;
+    }
+
+    if(action === "markBought"){
+      setItemState(key, { status: 2 });
+      renderAll(data);
+      return;
+    }
+
+    if(action === "unbuy"){
+      setItemState(key, { status: 1 });
+      renderAll(data);
+      return;
+    }
+  }
+
+  // HTML escaping
+  function escapeHtml(s){
+    return (s ?? "").toString()
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // -----------------------------
+  // Boot
+  // -----------------------------
+  (async function(){
+    const data = await loadData();
+
+    // Ensure every known item is in state with metadata
+    for(const cat of (data.categories || [])){
+      for(const name of (cat.items || [])){
+        const key = makeKey(cat.id, name);
+        if(!state[key]) state[key] = { status: 0, name, catId: cat.id };
+        else {
+          // keep existing status, just ensure metadata
+          state[key].name = state[key].name || name;
+          state[key].catId = state[key].catId || cat.id;
         }
-        anyVisible = true;
+      }
+    }
+    saveState(); // store any metadata back once
 
-        const li = document.createElement("li");
-        li.className = "item" + (saved.checked ? " checked" : "");
+    renderAll(data);
 
-        const cb = document.createElement("input");
-        cb.type = "checkbox";
-        cb.id = id;
-        cb.checked = !!saved.checked;
-
-        cb.addEventListener("change", ()=>{
-          state[id] = state[id] || {};
-          state[id].checked = cb.checked;
-          saveState();
-          render(); // refresh counts + strike-through
-        });
-
-        li.appendChild(cb);
-
-        if (typeof it === "string") {
-          const lab = document.createElement("label");
-          lab.setAttribute("for", id);
-          lab.textContent = it;
-          li.appendChild(lab);
-        } else if (it && it.custom) {
-          const input = document.createElement("input");
-          input.className = "custom";
-          input.placeholder = "…";
-          input.value = saved.text || "";
-          input.addEventListener("input", ()=>{
-            state[id] = state[id] || {};
-            state[id].text = input.value;
-            saveState();
-          });
-          input.addEventListener("focus", ()=>{ cb.scrollIntoView({block:"nearest"}); });
-          li.appendChild(input);
-
-          // Taper sur la ligne = coche/décoche (utile sur mobile)
-          li.addEventListener("click", (e)=>{
-            if (e.target === input) return;
-            cb.checked = !cb.checked;
-            cb.dispatchEvent(new Event("change"));
-          });
-        }
-
-        ul.appendChild(li);
-      });
-
-      // Si recherche et rien dans cette catégorie -> on n'affiche pas la card
-      if (!anyVisible) return;
-
-      card.appendChild(head);
-      card.appendChild(ul);
-      app.appendChild(card);
+    app.q.addEventListener("input", ()=>renderAll(data));
+    document.getElementById("btnReset").addEventListener("click", ()=>{
+      localStorage.removeItem(LS_KEY);
+      // Hard reload state
+      for(const k of Object.keys(state)) delete state[k];
+      toast("Réinitialisé");
+      renderAll(data);
+    });
+    document.getElementById("btnClearBought").addEventListener("click", ()=>{
+      Object.keys(state).forEach(k => { if(state[k]?.status === 2) state[k].status = 0; });
+      saveState();
+      renderAll(data);
     });
 
-    // Meta info sur le stockage
-    const meta = document.getElementById("meta");
-    meta.textContent = "Sauvegarde locale activée (sur cet iPhone)";
-  }
-
-  q.addEventListener("input", render);
-
-  document.getElementById("btnUncheck").addEventListener("click", ()=>{
-    Object.keys(state).forEach(k => { state[k].checked = false; });
-    saveState();
-    render();
-  });
-
-  document.getElementById("btnReset").addEventListener("click", ()=>{
-    // reset total (coche + textes)
-    Object.keys(state).forEach(k => delete state[k]);
-    localStorage.removeItem(LS_KEY);
-    toast("Réinitialisé");
-    render();
-  });
-
-  // First render
-  render();
+    document.body.addEventListener("click", (e)=>handleTap(e, data));
+  })();
 </script>
 </body>
 </html>
+
