@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "store_aisle_order": [
+    "droguerie",
+    "bazar",
+    "animalerie",
+    "hygiène",
+    "liquides",
+    "apéro",
+    "épicerie",
+    "crèmerie",
+    "charcuterie",
+    "fruits et légumes",
+    "poissonnerie",
+    "boucherie",
+    "surgelés"
+  ],
+  "categories": [
+    {
+      "id": "droguerie",
+      "title": "Droguerie",
+      "items": [
+        "Lessive",
+        "Assouplissant",
+        "Liquide vaisselle",
+        "Éponge",
+        "Essuie-tout",
+        "Sacs poubelle",
+        "Papier aluminium",
+        "Film étirable",
+        "Papier cuisson",
+        "Eau de Javel",
+        "Nettoyant sols / multi-usages",
+        "Désodorisant",
+        "Gants ménagers"
+      ]
+    },
+    {
+      "id": "bazar",
+      "title": "Bazar",
+      "items": [
+        "Piles",
+        "Ampoules",
+        "Sacs congélation",
+        "Bougies",
+        "Scotch / ruban adhésif",
+        "Serviettes en papier"
+      ]
+    },
+    {
+      "id": "animalerie",
+      "title": "Animalerie",
+      "items": [
+        "Croquettes",
+        "Pâtée",
+        "Litière",
+        "Friandises"
+      ]
+    },
+    {
+      "id": "hygiène",
+      "title": "Hygiène",
+      "items": [
+        "Shampooing",
+        "Après-shampooing",
+        "Gel douche / savon",
+        "Déodorant",
+        "Dentifrice",
+        "Brosses à dents",
+        "Fil dentaire",
+        "Coton / cotons-tiges",
+        "Mouchoirs",
+        "Papier hygiénique",
+        "Protections hygiéniques",
+        "Crème à raser / rasoirs",
+        "Pansements",
+        "Antidouleur (ex. paracétamol)"
+      ]
+    },
+    {
+      "id": "liquides",
+      "title": "Liquides",
+      "items": [
+        "Eau",
+        "Eau gazeuse",
+        "Jus de fruits",
+        "Soda",
+        "Café",
+        "Thé / infusion",
+        "Lait"
+      ]
+    },
+    {
+      "id": "apéro",
+      "title": "Apéro",
+      "items": [
+        "Chips",
+        "Cacahuètes / noix",
+        "Bretzels",
+        "Crackers / biscuits apéritifs",
+        "Olives",
+        "Saucisson apéro"
+      ]
+    },
+    {
+      "id": "épicerie",
+      "title": "Épicerie",
+      "items": [
+        "Pâtes",
+        "Riz",
+        "Semoule / quinoa",
+        "Farine",
+        "Sucre",
+        "Sel",
+        "Poivre",
+        "Épices (curry, paprika, origan…)",
+        "Huile d'olive",
+        "Vinaigre",
+        "Sauce tomate",
+        "Ketchup",
+        "Mayonnaise",
+        "Moutarde",
+        "Sauce soja",
+        "Conserves de thon",
+        "Tomates en conserve",
+        "Légumineuses (lentilles, pois chiches…)",
+        "Céréales / flocons d’avoine",
+        "Biscottes / pain de mie",
+        "Confiture",
+        "Chocolat / cacao"
+      ]
+    },
+    {
+      "id": "crèmerie",
+      "title": "Crèmerie",
+      "items": [
+        "Beurre",
+        "Œufs",
+        "Fromage",
+        "Emmental râpé",
+        "Yaourts",
+        "Fromage blanc",
+        "Crème fraîche"
+      ]
+    },
+    {
+      "id": "charcuterie",
+      "title": "Charcuterie",
+      "items": [
+        "Jambon",
+        "Blanc de dinde",
+        "Salami",
+        "Pâté / rillettes"
+      ]
+    },
+    {
+      "id": "fruits et légumes",
+      "title": "Fruits et légumes",
+      "items": [
+        "Bananes",
+        "Pommes",
+        "Oranges / clémentines",
+        "Raisins",
+        "Poires",
+        "Avocats",
+        "Tomates",
+        "Pommes de terre",
+        "Oignons",
+        "Ail",
+        "Carottes",
+        "Salade / laitue",
+        "Concombres",
+        "Poivrons",
+        "Brocolis",
+        "Courgettes",
+        "Céleri"
+      ]
+    },
+    {
+      "id": "poissonnerie",
+      "title": "Poissonnerie",
+      "items": [
+        "Saumon",
+        "Cabillaud",
+        "Crevettes",
+        "Thon",
+        "Moules / palourdes"
+      ]
+    },
+    {
+      "id": "boucherie",
+      "title": "Boucherie",
+      "items": [
+        "Poulet",
+        "Steaks hachés",
+        "Bœuf",
+        "Porc",
+        "Saucisses"
+      ]
+    },
+    {
+      "id": "surgelés",
+      "title": "Surgelés",
+      "items": [
+        "Légumes surgelés",
+        "Poisson surgelé",
+        "Pizza",
+        "Frites / pommes de terre",
+        "Glaces"
+      ]
+    }
+  ]
+}
