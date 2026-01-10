@@ -37,6 +37,29 @@
     }
     .btn:active{ transform: scale(.99); }
     .btn.danger{ border-color:#f1caca; }
+
+    .quickAdd{
+      display:grid;
+      grid-template-columns: 1fr 140px 110px;
+      gap:10px;
+      padding: 0 14px 12px;
+    }
+    @media (max-width: 520px){
+      .quickAdd{ grid-template-columns: 1fr 1fr; }
+      .quickAdd .span2{ grid-column: 1 / span 2; }
+    }
+    .field{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--card);
+      min-height: var(--tap);
+      padding: 10px 12px;
+      font-size:15px;
+      outline:none;
+      width:100%;
+    }
+    select.field{ padding-right: 30px; }
+
     main{ padding:12px 14px 18px; max-width: 820px; margin:0 auto; }
     .sectionTitle{ margin: 14px 2px 10px; font-size:12px; letter-spacing:.8px; text-transform:uppercase; color:var(--muted); }
     .card{
@@ -90,6 +113,13 @@
     <button class="btn danger" id="btnReset">Reset</button>
   </div>
 
+  <!-- AJOUT RAPIDE -->
+  <div class="quickAdd" id="quickAdd">
+    <input class="field span2" id="qaText" type="text" placeholder="Ajouter un article (ex: citron, sopalin…)" autocomplete="off" />
+    <select class="field" id="qaCat" aria-label="Catégorie"></select>
+    <button class="btn" id="qaBtn">Ajouter</button>
+  </div>
+
   <div class="row2">
     <div class="search" title="Rechercher">
       🔎 <input id="q" type="search" placeholder="Rechercher (ex: tomates, dentifrice…)" autocomplete="off" />
@@ -115,8 +145,9 @@
   // -----------------------------
   // Persistance
   // status: 0=neutre, 1=à acheter, 2=acheté
+  // Custom items: state.__custom[catId] = ["item", ...]
   // -----------------------------
-  const LS_KEY = "courses_bring_like_v2";
+  const LS_KEY = "courses_bring_like_v3";
   const state = loadState();
 
   function loadState(){
@@ -165,10 +196,13 @@
     selected: document.getElementById("selected"),
     bought: document.getElementById("bought"),
     catalog: document.getElementById("catalog"),
+    qaText: document.getElementById("qaText"),
+    qaCat: document.getElementById("qaCat"),
+    qaBtn: document.getElementById("qaBtn"),
   };
 
   function normalize(s){
-    return (s||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+    return (s||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
   }
   function makeKey(catId, name){
     return ("i__" + catId + "__" + name).toLowerCase().replace(/\s+/g,"_");
@@ -191,7 +225,6 @@
       if(!map.has(it.catId)) map.set(it.catId, []);
       map.get(it.catId).push(k);
     });
-    // Keep order
     return catOrder.map(id => [id, map.get(id) || []]).filter(([,arr])=>arr.length>0);
   }
 
@@ -199,6 +232,44 @@
     const m = new Map();
     data.categories.forEach(c => m.set(c.id, c.title));
     return m;
+  }
+
+  function escapeHtml(s){
+    return (s ?? "").toString()
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+
+  function ensureCustomBucket(){
+    if(!state.__custom) state.__custom = {}; // { catId: [name,...] }
+  }
+
+  // -----------------------------
+  // Custom items handling
+  // -----------------------------
+  function mergedItemsForCategory(cat){
+    // cat.items from JSON + custom in localStorage, dedup case-insensitive
+    ensureCustomBucket();
+    const base = (cat.items || []).slice();
+    const extra = (state.__custom[cat.id] || []).slice();
+    const seen = new Set(base.map(x => normalize(x)));
+    extra.forEach(x => { if(x && !seen.has(normalize(x))) base.push(x); });
+    return base;
+  }
+
+  function addCustomItem(catId, name){
+    ensureCustomBucket();
+    const n = name.trim();
+    if(!n) return false;
+    const keyNorm = normalize(n);
+    if(!state.__custom[catId]) state.__custom[catId] = [];
+
+    // dedup against custom list
+    if(state.__custom[catId].some(x => normalize(x) === keyNorm)) return true;
+
+    state.__custom[catId].push(n);
+    saveState();
+    return true;
   }
 
   // -----------------------------
@@ -211,7 +282,7 @@
     if(selectedKeys.length === 0){
       app.selected.innerHTML = `
         <div class="card">
-          <div class="tapHint">Tape un article dans le <b>Catalogue</b> pour l’ajouter ici. Re-tape ici pour le passer en <b>Acheté</b>.</div>
+          <div class="tapHint">Tape un article dans le <b>Catalogue</b> (ou via <b>Ajout rapide</b>) pour l’ajouter ici. Re-tape ici pour le passer en <b>Acheté</b>.</div>
         </div>`;
       return;
     }
@@ -221,15 +292,13 @@
       const catTitle = titleMap.get(catId) || catId;
       const lis = keys
         .sort((a,b)=> (state[a].name||"").localeCompare(state[b].name||"", "fr"))
-        .map(k => {
-          const name = state[k].name;
-          return `
-            <li class="item" data-key="${k}" data-action="markBought">
-              <span class="pill">${catTitle}</span>
-              <span class="name">${escapeHtml(name)}</span>
-              <span class="muted">→ Acheté</span>
-            </li>`;
-        }).join("");
+        .map(k => `
+          <li class="item" data-key="${k}" data-action="markBought">
+            <span class="pill">${escapeHtml(catTitle)}</span>
+            <span class="name">${escapeHtml(state[k].name)}</span>
+            <span class="muted">→ Acheté</span>
+          </li>`).join("");
+
       return `
         <div class="card">
           <div class="cardHeader">
@@ -260,15 +329,12 @@
       const catTitle = titleMap.get(catId) || catId;
       const lis = keys
         .sort((a,b)=> (state[a].name||"").localeCompare(state[b].name||"", "fr"))
-        .map(k => {
-          const name = state[k].name;
-          return `
-            <li class="item" data-key="${k}" data-action="unbuy">
-              <span class="pill">${catTitle}</span>
-              <span class="name muted" style="text-decoration:line-through;">${escapeHtml(name)}</span>
-              <span class="muted">↩︎</span>
-            </li>`;
-        }).join("");
+        .map(k => `
+          <li class="item" data-key="${k}" data-action="unbuy">
+            <span class="pill">${escapeHtml(catTitle)}</span>
+            <span class="name muted" style="text-decoration:line-through;">${escapeHtml(state[k].name)}</span>
+            <span class="muted">↩︎</span>
+          </li>`).join("");
 
       return `
         <div class="card">
@@ -287,7 +353,6 @@
     const q = normalize(app.q.value);
     const titleMap = categoryTitleById(data);
 
-    // Sort categories in store order (and append any unknown at end)
     const byId = new Map(data.categories.map(c => [c.id, c]));
     const orderedCats = [
       ...data.store_aisle_order.filter(id => byId.has(id)).map(id => byId.get(id)),
@@ -295,16 +360,18 @@
     ];
 
     app.catalog.innerHTML = orderedCats.map(cat => {
-      const items = cat.items || [];
-      const lines = items.map(name => {
+      const mergedItems = mergedItemsForCategory(cat);
+
+      const lines = mergedItems.map(name => {
         const key = makeKey(cat.id, name);
-        // ensure we store metadata at least once (for grouping)
+
+        // ensure metadata at least once
         if(!state[key]) state[key] = { status: 0, name, catId: cat.id };
+        else { state[key].name = state[key].name || name; state[key].catId = state[key].catId || cat.id; }
 
         const st = getItemState(key).status;
         const badge = st === 1 ? "• À acheter" : (st === 2 ? "✓ Acheté" : "");
         const visible = !q || normalize(name).includes(q);
-
         if(!visible) return "";
 
         return `
@@ -334,18 +401,19 @@
           <ul class="items">${lines}</ul>
         </div>`;
     }).join("");
+
+    saveState(); // persist any metadata + custom merge bookkeeping
   }
 
   function renderAll(data){
-    // Clean meta
-    app.meta.textContent = "Sauvegarde locale activée • mode Bring-like";
+    app.meta.textContent = "Sauvegarde locale • Tap catalogue = À acheter • Tap À acheter = Acheté";
     renderSelected(data);
     renderBought(data);
     renderCatalog(data);
   }
 
   // -----------------------------
-  // Actions (tap anywhere on item rows)
+  // Actions
   // -----------------------------
   function handleTap(e, data){
     const li = e.target.closest(".item");
@@ -356,19 +424,16 @@
 
     if(action === "toggleSelect"){
       const cur = getItemState(key).status;
-      // 0->1 (à acheter), 1->0 (retire), 2->1 (ré-acheter)
-      const next = (cur === 0) ? 1 : (cur === 1 ? 0 : 1);
+      const next = (cur === 0) ? 1 : (cur === 1 ? 0 : 1); // 2->1
       setItemState(key, { status: next });
       renderAll(data);
       return;
     }
-
     if(action === "markBought"){
       setItemState(key, { status: 2 });
       renderAll(data);
       return;
     }
-
     if(action === "unbuy"){
       setItemState(key, { status: 1 });
       renderAll(data);
@@ -376,14 +441,41 @@
     }
   }
 
-  // HTML escaping
-  function escapeHtml(s){
-    return (s ?? "").toString()
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
+  function populateQuickAddCats(data){
+    // order = store aisles; label uses title; default = épicerie
+    const titleMap = categoryTitleById(data);
+    const byId = new Map(data.categories.map(c => [c.id, c]));
+    const ids = data.store_aisle_order.filter(id => byId.has(id));
+    app.qaCat.innerHTML = ids.map(id=>{
+      const t = (byId.get(id)?.title) || titleMap.get(id) || id;
+      return `<option value="${escapeHtml(id)}">${escapeHtml(t)}</option>`;
+    }).join("");
+
+    const defaultId = ids.includes("épicerie") ? "épicerie" : (ids[0] || "");
+    if(defaultId) app.qaCat.value = defaultId;
+  }
+
+  function handleQuickAdd(data){
+    const raw = app.qaText.value || "";
+    const name = raw.trim();
+    if(!name) return;
+
+    const catId = app.qaCat.value || "épicerie";
+
+    // If item exists in JSON or custom, fine. Otherwise create custom.
+    addCustomItem(catId, name);
+
+    // Add to "À acheter"
+    const key = makeKey(catId, name);
+    state[key] = state[key] || { status: 0, name, catId };
+    state[key].name = name;
+    state[key].catId = catId;
+    state[key].status = 1;
+    saveState();
+
+    app.qaText.value = "";
+    toast("Ajouté à “À acheter”");
+    renderAll(data);
   }
 
   // -----------------------------
@@ -391,30 +483,28 @@
   // -----------------------------
   (async function(){
     const data = await loadData();
+    ensureCustomBucket();
 
-    // Ensure every known item is in state with metadata
+    // ensure known items metadata
     for(const cat of (data.categories || [])){
       for(const name of (cat.items || [])){
         const key = makeKey(cat.id, name);
         if(!state[key]) state[key] = { status: 0, name, catId: cat.id };
-        else {
-          // keep existing status, just ensure metadata
-          state[key].name = state[key].name || name;
-          state[key].catId = state[key].catId || cat.id;
-        }
+        else { state[key].name = state[key].name || name; state[key].catId = state[key].catId || cat.id; }
       }
     }
-    saveState(); // store any metadata back once
+    saveState();
 
+    populateQuickAddCats(data);
     renderAll(data);
 
     app.q.addEventListener("input", ()=>renderAll(data));
     document.getElementById("btnReset").addEventListener("click", ()=>{
       localStorage.removeItem(LS_KEY);
-      // Hard reload state
       for(const k of Object.keys(state)) delete state[k];
       toast("Réinitialisé");
-      renderAll(data);
+      // reload page to rebuild from json cleanly
+      location.reload();
     });
     document.getElementById("btnClearBought").addEventListener("click", ()=>{
       Object.keys(state).forEach(k => { if(state[k]?.status === 2) state[k].status = 0; });
@@ -422,9 +512,14 @@
       renderAll(data);
     });
 
+    // Quick add actions
+    app.qaBtn.addEventListener("click", ()=>handleQuickAdd(data));
+    app.qaText.addEventListener("keydown", (ev)=>{
+      if(ev.key === "Enter"){ ev.preventDefault(); handleQuickAdd(data); }
+    });
+
     document.body.addEventListener("click", (e)=>handleTap(e, data));
   })();
 </script>
 </body>
 </html>
-
