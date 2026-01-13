@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Liste de courses</title>
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="theme-color" content="#1a1a1a" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -34,14 +34,20 @@
 </header>
 
 <main id="app" class="safe">
-  <div class="sectionTitle">À acheter</div>
-  <div id="selected"></div>
+  <div id="selected-section">
+    <div class="sectionTitle">À acheter</div>
+    <div id="selected"></div>
+  </div>
 
-  <div class="sectionTitle">Acheté (trié par rayons)</div>
-  <div id="bought"></div>
+  <div id="bought-section">
+    <div class="sectionTitle">Acheté</div>
+    <div id="bought"></div>
+  </div>
 
-  <div class="sectionTitle">Catalogue</div>
-  <div id="catalog"></div>
+  <div id="catalog-section">
+    <div class="sectionTitle">Catalogue</div>
+    <div id="catalog"></div>
+  </div>
 </main>
 
 <div class="toast" id="toast">Sauvegardé</div>

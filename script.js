@@ -279,7 +279,7 @@ function renderCatalog(data) {
 }
 
 function renderAll(data) {
-  app.meta.textContent = "Sauvegarde locale • Tap catalogue = À acheter • Tap À acheter = Acheté";
+  app.meta.textContent = "";
   renderSelected(data);
   renderBought(data);
   renderCatalog(data);

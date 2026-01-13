@@ -1,12 +1,20 @@
 :root {
-  --bg: #f6f6f7;
-  --card: #fff;
-  --ink: #111;
-  --muted: #6b6b6f;
-  --line: #e7e7ea;
-  --shadow: 0 10px 24px rgba(0, 0, 0, .08);
+  --bg: #1a1a1a;
+  --card: #2a2a2a;
+  --ink: #e8e8e8;
+  --muted: #9a9a9a;
+  --line: #3a3a3a;
+  --shadow: 0 10px 24px rgba(0, 0, 0, .4);
   --radius: 16px;
   --tap: 46px;
+  
+  /* Couleurs par section - mode sombre */
+  --color-selected: rgba(76, 175, 80, 0.15);
+  --color-selected-accent: #66bb6a;
+  --color-bought: rgba(255, 152, 0, 0.15);
+  --color-bought-accent: #ffb74d;
+  --color-catalog: rgba(33, 150, 243, 0.15);
+  --color-catalog-accent: #64b5f6;
 }
 
 * {
@@ -29,9 +37,10 @@ header {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(246, 246, 247, .92);
+  background: rgba(26, 26, 26, .95);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid var(--line);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .bar {
@@ -51,9 +60,10 @@ header {
 
 h1 {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   letter-spacing: .2px;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .meta {
@@ -79,6 +89,12 @@ h1 {
   align-items: center;
   gap: 10px;
   box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+  transition: all 0.2s ease;
+}
+
+.search:focus-within {
+  border-color: var(--color-catalog-accent);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
 }
 
 .search input {
@@ -87,6 +103,11 @@ h1 {
   outline: none;
   font-size: 15px;
   background: transparent;
+  color: var(--ink);
+}
+
+.search input::placeholder {
+  color: var(--muted);
 }
 
 .btn {
@@ -101,11 +122,15 @@ h1 {
   gap: 8px;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: var(--ink);
 }
 
 .btn:hover {
-  background: #fafafa;
+  background: #3a3a3a;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .btn:active {
@@ -113,12 +138,14 @@ h1 {
 }
 
 .btn.danger {
-  border-color: #f1caca;
-  color: #c33;
+  border-color: #d32f2f;
+  color: #ff5252;
+  background: rgba(211, 47, 47, 0.2);
 }
 
 .btn.danger:hover {
-  background: #fff5f5;
+  background: rgba(211, 47, 47, 0.3);
+  color: #ff6b6b;
 }
 
 .quickAdd {
@@ -147,10 +174,21 @@ h1 {
   outline: none;
   width: 100%;
   transition: border-color 0.2s ease;
+  color: var(--ink);
+}
+
+.field::placeholder {
+  color: var(--muted);
+}
+
+.field option {
+  background: var(--card);
+  color: var(--ink);
 }
 
 .field:focus {
-  border-color: #999;
+  border-color: var(--color-catalog-accent);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
 }
 
 select.field {
@@ -164,12 +202,58 @@ main {
 }
 
 .sectionTitle {
-  margin: 20px 2px 12px;
-  font-size: 13px;
-  letter-spacing: .8px;
+  margin: 32px 2px 16px;
+  font-size: 14px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 600;
+  font-weight: 700;
+  padding: 8px 0;
+  border-bottom: 3px solid;
+  display: inline-block;
+  width: 100%;
+}
+
+/* Couleurs spécifiques pour chaque section */
+#selected-section {
+  background: linear-gradient(to bottom, var(--color-selected) 0%, transparent 100%);
+  padding: 24px 0 32px 0;
+  margin: -12px -14px 32px -14px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 0 0 20px 20px;
+}
+
+#selected-section .sectionTitle {
+  color: var(--color-selected-accent);
+  border-bottom-color: var(--color-selected-accent);
+}
+
+#bought-section {
+  background: linear-gradient(to bottom, var(--color-bought) 0%, transparent 100%);
+  padding: 24px 0 32px 0;
+  margin: -12px -14px 32px -14px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 0 0 20px 20px;
+}
+
+#bought-section .sectionTitle {
+  color: var(--color-bought-accent);
+  border-bottom-color: var(--color-bought-accent);
+}
+
+#catalog-section {
+  background: linear-gradient(to bottom, var(--color-catalog) 0%, transparent 100%);
+  padding: 24px 0 32px 0;
+  margin: -12px -14px 32px -14px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 0 0 20px 20px;
+}
+
+#catalog-section .sectionTitle {
+  color: var(--color-catalog-accent);
+  border-bottom-color: var(--color-catalog-accent);
 }
 
 .card {
@@ -179,6 +263,19 @@ main {
   box-shadow: var(--shadow);
   overflow: hidden;
   margin-bottom: 12px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* Couleurs pour les cartes de la section "Acheté" */
+#bought .card {
+  border-color: rgba(255, 152, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+}
+
+/* Couleurs pour les cartes du catalogue */
+#catalog .card {
+  border-color: rgba(33, 150, 243, 0.3);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
 }
 
 .cardHeader {
@@ -188,6 +285,7 @@ main {
   justify-content: space-between;
   gap: 10px;
   border-bottom: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .catTitle {
@@ -217,15 +315,17 @@ main {
   padding: 10px 10px;
   min-height: var(--tap);
   border-radius: 14px;
-  transition: background-color 0.15s ease;
+  transition: all 0.15s ease;
+  cursor: pointer;
 }
 
 .item:hover {
-  background: #fafafa;
+  background: #f8f9fa;
+  transform: translateX(2px);
 }
 
 .item + .item {
-  border-top: 1px solid rgba(231, 231, 234, .55);
+  border-top: 1px solid rgba(58, 58, 58, .8);
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -240,6 +340,8 @@ main {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
+  background: #333;
+  font-weight: 500;
 }
 
 .name {
@@ -253,10 +355,11 @@ main {
 }
 
 .tapHint {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
   padding: 8px 14px 12px;
   line-height: 1.5;
+  opacity: 0.7;
 }
 
 .smallBtn {
@@ -271,15 +374,17 @@ main {
   left: 50%;
   bottom: calc(env(safe-area-inset-bottom) + 16px);
   transform: translateX(-50%);
-  background: rgba(17, 17, 17, .92);
-  color: #fff;
-  padding: 10px 12px;
+  background: var(--color-selected-accent);
+  color: #1a1a1a;
+  padding: 12px 20px;
   border-radius: 999px;
   font-size: 13px;
+  font-weight: 600;
   opacity: 0;
   pointer-events: none;
-  transition: opacity .2s ease;
+  transition: opacity .2s ease, transform .2s ease;
   z-index: 1000;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
 }
 
 .toast.show {
@@ -302,17 +407,18 @@ details > summary::-webkit-details-marker {
 /* Styles pour la section "À acheter" avec séparateurs simples */
 .selectedContainer {
   background: var(--card);
-  border: 1px solid var(--line);
+  border: 2px solid var(--color-selected-accent);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
   overflow: hidden;
   margin-bottom: 12px;
 }
 
 .categorySeparator {
-  border-top: 2px solid var(--ink);
+  border-top: 2px solid var(--color-selected-accent);
   margin: 12px 14px 8px;
   padding-top: 8px;
+  opacity: 0.4;
 }
 
 .categorySeparator:first-child {
