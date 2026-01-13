@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Liste de courses</title>
+  <meta name="theme-color" content="#1a1a1a" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+<header class="safe">
+  <div class="bar">
+    <div class="title">
+      <h1>Liste de courses</h1>
+      <p class="meta" id="meta">Chargement…</p>
+    </div>
+    <button class="btn danger" id="btnReset">Reset</button>
+  </div>
+
+  <!-- AJOUT RAPIDE -->
+  <div class="quickAdd" id="quickAdd">
+    <input class="field span2" id="qaText" type="text" placeholder="Ajouter un article (ex: citron, sopalin…)" autocomplete="off" />
+    <select class="field" id="qaCat" aria-label="Catégorie"></select>
+    <button class="btn" id="qaBtn">Ajouter</button>
+  </div>
+
+  <div class="row2">
+    <div class="search" title="Rechercher">
+      🔎 <input id="q" type="search" placeholder="Rechercher (ex: tomates, dentifrice…)" autocomplete="off" />
+    </div>
+    <button class="btn" id="btnClearBought">Vider "Acheté"</button>
+  </div>
+</header>
+
+<main id="app" class="safe">
+  <div id="selected-section">
+    <div class="sectionTitle">À acheter</div>
+    <div id="selected"></div>
+  </div>
+
+  <div id="bought-section">
+    <div class="sectionTitle">Acheté</div>
+    <div id="bought"></div>
+  </div>
+
+  <div id="catalog-section">
+    <div class="sectionTitle">Catalogue</div>
+    <div id="catalog"></div>
+  </div>
+</main>
+
+<div class="toast" id="toast">Sauvegardé</div>
+
+<script src="script.js"></script>
+</body>
+</html>

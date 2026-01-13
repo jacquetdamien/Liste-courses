@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Liste de courses</title>
+  <meta name="theme-color" content="#ffffff" />
+  <style>
+    :root{
+      --bg:#f6f6f7;
+      --card:#ffffff;
+      --ink:#111111;
+      --muted:#6b6b6f;
+      --line:#e7e7ea;
+      --shadow: 0 10px 24px rgba(0,0,0,.08);
+      --radius: 16px;
+      --tap: 44px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .safe{
+      padding: env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
+    }
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(246,246,247,.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .bar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      padding: 10px 14px;
+    }
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width: 140px;
+    }
+    h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    .meta{
+      margin:0;
+      font-size:12px;
+      color: var(--muted);
+    }
+    .btn{
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size:13px;
+      min-height: var(--tap);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn:active{ transform: scale(.99); }
+    .btn.danger{ border-color:#f1caca; }
+    .row2{
+      display:flex;
+      gap:10px;
+      padding: 0 14px 12px;
+    }
+    .search{
+      flex:1 1 auto;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      padding: 10px 12px;
+      min-height: var(--tap);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+    }
+    .search input{
+      width:100%;
+      border:none;
+      outline:none;
+      font-size:15px;
+      background:transparent;
+    }
+    main{
+      padding: 12px 14px 18px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-bottom: 12px;
+    }
+    .cardHeader{
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .cat{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .catTitle{
+      margin:0;
+      font-size:13px;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+    }
+    .catCount{
+      margin:0;
+      font-size:12px;
+      color: var(--muted);
+    }
+    .items{
+      list-style:none;
+      margin:0;
+      padding: 6px 6px 8px;
+    }
+    .item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 10px;
+      border-radius: 14px;
+      min-height: var(--tap);
+    }
+    .item + .item{ border-top: 1px solid rgba(231,231,234,.55); border-top-left-radius:0; border-top-right-radius:0; }
+    .item:first-child{ border-top:none; }
+    input[type="checkbox"]{
+      width:22px; height:22px;
+      flex: 0 0 auto;
+      accent-color:#111;
+    }
+    label{
+      font-size:16px;
+      line-height:1.2;
+      flex: 1 1 auto;
+      cursor:pointer;
+      padding: 2px 0;
+    }
+    .checked label{
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .custom{
+      display:block;
+      width:100%;
+      border:none;
+      outline:none;
+      background: transparent;
+      font-size:16px;
+      line-height:1.2;
+      padding: 2px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .smallBtn{
+      font-size:12px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      min-height: 38px;
+    }
+    .footerNote{
+      text-align:center;
+      font-size:12px;
+      color: var(--muted);
+      padding: 12px 0 2px;
+    }
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: calc(env(safe-area-inset-bottom) + 16px);
+      transform: translateX(-50%);
+      background: rgba(17,17,17,.92);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease;
+    }
+    .toast.show{ opacity:1; }
+  </style>
+</head>
+
+<body>
+<header class="safe">
+  <div class="bar">
+    <div class="title">
+      <h1>Liste de courses</h1>
+      <p class="meta" id="meta">Sauvegarde locale activée</p>
+    </div>
+    <button class="btn" id="btnUncheck" title="Tout décocher">Tout décocher</button>
+  </div>
+
+  <div class="row2">
+    <div class="search" title="Rechercher un item">
+      🔎 <input id="q" type="search" placeholder="Rechercher (ex: tomates, lait…)" autocomplete="off" />
+    </div>
+    <button class="btn danger" id="btnReset" title="Effacer toutes les coches et textes">Reset</button>
+  </div>
+</header>
+
+<main id="app" class="safe"></main>
+
+<div class="toast" id="toast">Sauvegardé</div>
+
+<script>
+  // =========================
+  // Données (Ziplist-like)
+  // =========================
+  const DATA = [
+    { title: "Fruits", items: ["Bananes","Pommes","Raisins","Oranges","Fraises","Avocats","Pêches","Ananas","Poires",{custom:true}] },
+    { title: "Légumes", items: ["Pommes de terre","Tomates","Oignons","Carottes","Laitue","Brocolis","Poivrons","Céleri","Ail","Concombres",{custom:true}] },
+    { title: "Conserves", items: ["Olives","Soupe","Thon","Légumes","Fruits",{custom:true}] },
+    { title: "Surgelés", items: ["Poisson","Crème glacée","Pizza","Pommes de terre","Plats préparés","Légumes"] },
+    { title: "Viandes", items: ["Poulet","Bœuf","Porc","Saucisse"] },
+    { title: "Poissons", items: ["Crevettes","Crabe","Palourdes","Thon","Saumon","Tilapia",{custom:true},{custom:true}] },
+    { title: "Charcuterie", items: ["Fromage","Jambon","Dinde","Salami",{custom:true},{custom:true}] },
+    { title: "Condiments et épices", items: ["Sel","Sucre","Poivre","Cannelle","Origan","Ketchup","Mayonnaise","Moutarde",{custom:true}] },
+    { title: "Sauces & huiles", items: ["Huile d'olive","Sauce tomate","Sauce piquante","Sauce soja",{custom:true}] },
+    { title: "Snacks", items: ["Chips","Crackers","Bretzels","Popcorn","Cacahuètes","Noix","Bonbons",{custom:true}] },
+    { title: "Pain / Boulangerie", items: ["Blé entier","Blanc","Italien","Sandwich","Tortillas","Tartes","Muffins","Bagels","Biscuits",{custom:true}] },
+    { title: "Boissons", items: ["Eau","Café","Lait","Jus de fruit","Soda","Thé","Bière","Vin"] },
+    { title: "Pâtes / Riz", items: ["Spaghetti","Macaronis","Nouilles","Riz blanc"] },
+    { title: "Céréale", items: ["Avoine","Riz","Blé","Granola"] },
+    { title: "Cuisson", items: ["Farine","Poudre à lever","Beurre","Lait","Œufs"] },
+    { title: "Bébé", items: ["Purée","Couches","Lingettes humides","Lotion hydratante"] },
+    { title: "Hygiène et beauté", items: ["Shampooing","Après-shampoing","Savon","Déodorant","Dentifrice","Fil dentaire","Crème à raser","Lames de rasoir"] },
+    { title: "Soins de santé", items: ["Pansements","Eau oxygénée","Alcool","Analgésiques","Antiacides"] },
+    { title: "Papier et film", items: ["Papier hygiénique","Essuie-tout","Mouchoirs","Papier d'aluminium","Sacs poubelles"] },
+    { title: "Entretien et nettoyage", items: ["Détergent","Adoucissant","Eau de Javel","Savon de vaisselle","Désodorisant","Gants","Éponge","Sacs poubelles","Piles"] },
+    { title: "Autres", items: [{custom:true},{custom:true},{custom:true},{custom:true},{custom:true},{custom:true},{custom:true},{custom:true},{custom:true}] },
+  ];
+
+  // =========================
+  // Persistance (iPhone / Safari)
+  // =========================
+  const LS_KEY = "courses_mobile_v1";
+  const state = loadState();
+
+  function loadState(){
+    try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}"); }
+    catch { return {}; }
+  }
+  function saveState(){
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+    toast("Sauvegardé");
+  }
+
+  // Petit feedback discret
+  let toastT = null;
+  function toast(msg){
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toastT);
+    toastT = setTimeout(()=>el.classList.remove("show"), 700);
+  }
+
+  function makeId(cat, idx){
+    return (cat + "___" + idx).toLowerCase().replace(/\s+/g,"_");
+  }
+
+  // =========================
+  // Rendu + filtre recherche
+  // =========================
+  const app = document.getElementById("app");
+  const q = document.getElementById("q");
+
+  function normalize(s){
+    return (s||"")
+      .toString()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"") // remove accents
+      .toLowerCase();
+  }
+
+  function render(){
+    const query = normalize(q.value);
+    app.innerHTML = "";
+
+    DATA.forEach(block => {
+      const card = document.createElement("section");
+      card.className = "card";
+
+      const head = document.createElement("div");
+      head.className = "cardHeader";
+
+      const left = document.createElement("div");
+      left.className = "cat";
+      const h = document.createElement("p");
+      h.className = "catTitle";
+      h.textContent = block.title;
+
+      // Count checked in this category
+      let checkedCount = 0;
+      block.items.forEach((_, idx)=>{
+        const id = makeId(block.title, idx);
+        if (state[id]?.checked) checkedCount++;
+      });
+
+      const c = document.createElement("p");
+      c.className = "catCount";
+      c.textContent = checkedCount ? `${checkedCount} coché(s)` : "—";
+
+      left.appendChild(h);
+      left.appendChild(c);
+
+      const btn = document.createElement("button");
+      btn.className = "btn smallBtn";
+      btn.textContent = "Tout effacer";
+      btn.title = "Décoche et vide les lignes perso de cette catégorie";
+      btn.addEventListener("click", ()=>{
+        block.items.forEach((it, idx)=>{
+          const id = makeId(block.title, idx);
+          state[id] = state[id] || {};
+          state[id].checked = false;
+          if (it && typeof it === "object" && it.custom) state[id].text = "";
+        });
+        saveState();
+        render();
+      });
+
+      head.appendChild(left);
+      head.appendChild(btn);
+
+      const ul = document.createElement("ul");
+      ul.className = "items";
+
+      let anyVisible = false;
+
+      block.items.forEach((it, idx) => {
+        const id = makeId(block.title, idx);
+        const saved = state[id] || {};
+        const labelText = (typeof it === "string") ? it : (saved.text || "");
+
+        // Filtre recherche (inclut les lignes custom remplies)
+        if (query){
+          if (!normalize(labelText).includes(query)) return;
+        }
+        anyVisible = true;
+
+        const li = document.createElement("li");
+        li.className = "item" + (saved.checked ? " checked" : "");
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.id = id;
+        cb.checked = !!saved.checked;
+
+        cb.addEventListener("change", ()=>{
+          state[id] = state[id] || {};
+          state[id].checked = cb.checked;
+          saveState();
+          render(); // refresh counts + strike-through
+        });
+
+        li.appendChild(cb);
+
+        if (typeof it === "string") {
+          const lab = document.createElement("label");
+          lab.setAttribute("for", id);
+          lab.textContent = it;
+          li.appendChild(lab);
+        } else if (it && it.custom) {
+          const input = document.createElement("input");
+          input.className = "custom";
+          input.placeholder = "…";
+          input.value = saved.text || "";
+          input.addEventListener("input", ()=>{
+            state[id] = state[id] || {};
+            state[id].text = input.value;
+            saveState();
+          });
+          input.addEventListener("focus", ()=>{ cb.scrollIntoView({block:"nearest"}); });
+          li.appendChild(input);
+
+          // Taper sur la ligne = coche/décoche (utile sur mobile)
+          li.addEventListener("click", (e)=>{
+            if (e.target === input) return;
+            cb.checked = !cb.checked;
+            cb.dispatchEvent(new Event("change"));
+          });
+        }
+
+        ul.appendChild(li);
+      });
+
+      // Si recherche et rien dans cette catégorie -> on n'affiche pas la card
+      if (!anyVisible) return;
+
+      card.appendChild(head);
+      card.appendChild(ul);
+      app.appendChild(card);
+    });
+
+    // Meta info sur le stockage
+    const meta = document.getElementById("meta");
+    meta.textContent = "Sauvegarde locale activée (sur cet iPhone)";
+  }
+
+  q.addEventListener("input", render);
+
+  document.getElementById("btnUncheck").addEventListener("click", ()=>{
+    Object.keys(state).forEach(k => { state[k].checked = false; });
+    saveState();
+    render();
+  });
+
+  document.getElementById("btnReset").addEventListener("click", ()=>{
+    // reset total (coche + textes)
+    Object.keys(state).forEach(k => delete state[k]);
+    localStorage.removeItem(LS_KEY);
+    toast("Réinitialisé");
+    render();
+  });
+
+  // First render
+  render();
+</script>
+</body>
+</html>
